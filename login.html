@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Login Form</title>
+  <style>
+    :root{--bg:#f4f7fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center}
+    .card{background:var(--card); border-radius:12px; box-shadow:0 6px 24px rgba(16,24,40,0.06); padding:28px; width:320px}
+    h1{font-size:20px;margin:0 0 12px}
+    label{display:block;font-size:13px;color:var(--muted); margin-bottom:6px}
+    input[type="text"], input[type="password"]{width:100%; padding:10px 12px; border:1px solid #e6e9ef; border-radius:8px; font-size:14px}
+    .row{margin-bottom:14px}
+    .actions{display:flex; align-items:center; justify-content:space-between}
+    .btn{background:var(--accent); color:white; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600}
+    .btn:disabled{opacity:0.6; cursor:not-allowed}
+    .small{font-size:13px;color:var(--muted)}
+    .inline{display:inline-flex; align-items:center; gap:8px}
+    .error{color:#b91c1c;font-size:13px;margin-top:6px}
+    .footer{font-size:12px;color:var(--muted); text-align:center; margin-top:12px}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="login-heading">
+    <h1 id="login-heading">Sign in</h1>
+
+    <!-- Accessible login form - example only. Do not send real credentials to this static page. -->
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="row">
+        <label for="username">Username or email</label>
+        <input id="username" name="username" type="text" inputmode="email" autocomplete="username" required minlength="3" />
+        <div id="usernameError" class="error" aria-live="polite" hidden></div>
+      </div>
+
+      <div class="row">
+        <label for="password">Password</label>
+        <div style="position:relative">
+          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" style="padding-right:84px" />
+          <button type="button" id="togglePwd" aria-pressed="false" title="Show password" style="position:absolute; right:6px; top:6px; height:34px; border-radius:6px; border:none; padding:0 8px; background:#eef2ff; cursor:pointer">Show</button>
+        </div>
+        <div id="passwordError" class="error" aria-live="polite" hidden></div>
+      </div>
+
+      <div class="row actions">
+        <label class="inline small"><input id="remember" name="remember" type="checkbox" /> Remember me</label>
+        <a href="#" class="small">Forgot?</a>
+      </div>
+
+      <div class="row">
+        <button id="submitBtn" class="btn" type="submit">Sign in</button>
+        <div id="submitError" class="error" aria-live="polite" hidden></div>
+      </div>
+    </form>
+
+    <p class="footer">Don't have an account? <a href="#">Create one</a></p>
+  </main>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const submitError = document.getElementById('submitError');
+    const togglePwd = document.getElementById('togglePwd');
+
+    togglePwd.addEventListener('click', () => {
+      const isPwd = password.type === 'password';
+      password.type = isPwd ? 'text' : 'password';
+      togglePwd.textContent = isPwd ? 'Hide' : 'Show';
+      togglePwd.setAttribute('aria-pressed', String(isPwd));
+      togglePwd.title = isPwd ? 'Hide password' : 'Show password';
+    });
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.hidden = false;
+    }
+    function clearError(el) { el.textContent = ''; el.hidden = true }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearError(usernameError); clearError(passwordError); clearError(submitError);
+
+      let valid = true;
+      if (!username.value || username.value.trim().length < 3) {
+        showError(usernameError, 'Enter a valid username (at least 3 characters).');
+        valid = false;
+      }
+      if (!password.value || password.value.length < 6) {
+        showError(passwordError, 'Password must be at least 6 characters.');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Example client-side: disable button to prevent double submits
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+
+      // --- IMPORTANT ---
+      // This example doesn't send credentials anywhere. Replace the fetch URL below
+      // with your server endpoint (HTTPS). On the server, validate and authenticate.
+
+      // Example fetch (uncomment + edit to use):
+      /*
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.value.trim(), password: password.value })
+      })
+      .then(r => r.json())
+      .then(data => {
+        // handle success or error from server
+      })
+      .catch(err => {
+        showError(submitError, 'Network error. Try again.');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign in';
+      });
+      */
+
+      // Demo behavior: simulate success and re-enable
+      setTimeout(() => {
+        alert('Demo: form validated. Replace JS fetch with your server endpoint to actually sign in.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign in';
+      }, 700);
+
+    });
+  </script>
+</body>
+</html>
